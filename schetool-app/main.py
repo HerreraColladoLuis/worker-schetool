@@ -68,7 +68,7 @@ def main(page: ft.Page):
 
     # Crear botones circulares
     boton_amarillo = ft.ElevatedButton(
-        text="Amarillo",
+        text="Ir",
         on_click=ir_a_pagina_amarilla,  # Acción al pulsar
         style=ft.ButtonStyle(
             shape=ft.CircleBorder(),
@@ -80,7 +80,7 @@ def main(page: ft.Page):
     )
 
     boton_azul = ft.ElevatedButton(
-        text="Azul",
+        text="Ir",
         on_click=ir_a_pagina_azul,  # Acción al pulsar
         style=ft.ButtonStyle(
             shape=ft.CircleBorder(),
