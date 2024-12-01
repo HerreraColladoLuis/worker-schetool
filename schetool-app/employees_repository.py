@@ -10,6 +10,32 @@ def add_employee(employee: EmployeesDto):
                                          EmployeesDto.employee_email, EmployeesDto.employee_phone_number,
                                          EmployeesDto.employee_weekly_hours, EmployeesDto.employee_role))
     db.commit()
-    id_inserted = cursor.lastrowid
+    employee.employee_id = cursor.lastrowid
     db.close()
-    return id_inserted
+    return employee
+
+
+def get_employees():
+    db = get_connection(DB_NAME)
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM employees")
+    employees = cursor.fetchall()
+    db.close()
+    return employees
+
+
+def get_employee(employee_id: int):
+    db = get_connection(DB_NAME)
+    cursor = db.cursor("SELECT * FROM employees WHERE employee_id = ?", str(employee_id))
+    cursor.execute()
+    employee = cursor.fetchone()
+    db.close()
+    return employee
+
+
+def delete_employee(employee_id: int):
+    db = get_connection(DB_NAME)
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM employees WHERE employee_id = ?", str(employee_id))
+    db.commit()
+    db.close()
