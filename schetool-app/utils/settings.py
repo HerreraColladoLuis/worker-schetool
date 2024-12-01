@@ -1,1 +1,1 @@
-DB_NAME = "schetool.db"
+DB_NAME = "schetool-database.db"

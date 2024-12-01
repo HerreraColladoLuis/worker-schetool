@@ -8,5 +8,4 @@ class EmployeesDto:
     employee_surname: str
     employee_email: str
     employee_phone_number: str
-    employee_weekly_hours: int
     employee_role: int
