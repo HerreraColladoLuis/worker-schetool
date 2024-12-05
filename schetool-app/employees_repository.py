@@ -1,42 +1,32 @@
 from dtos.employees_dto import EmployeesDto
 from utils.settings import DB_NAME
-from utils.database_utils import (get_connection, ADD_EMPLOYEES_QUERY, GET_ALL_EMPLOYEES_QUERY,
-                                  GET_EMPLOYEE_BY_ID_QUERY, DELETE_EMPLOYEE_QUERY)
+from utils.database_utils import Database
+from typing import Optional
+
+db = Database(DB_NAME)
+
+def add_employee(employee: EmployeesDto) -> None:
+    query = (
+        "INSERT INTO employees (employee_name, employee_surname, employee_email, employee_phone_number, "
+        "employee_role) VALUES (?, ?, ?, ?, ?, ?)"
+    )
+    params = (EmployeesDto.employee_name, EmployeesDto.employee_surname,EmployeesDto.employee_email,
+              EmployeesDto.employee_phone_number, EmployeesDto.employee_role)
+    db.execute_query(query, params)
 
 
-def add_employee(employee: EmployeesDto):
-    db = get_connection(DB_NAME)
-    cursor = db.cursor()
-    cursor.execute(ADD_EMPLOYEES_QUERY, (EmployeesDto.employee_name, EmployeesDto.employee_surname,
-                                         EmployeesDto.employee_email, EmployeesDto.employee_phone_number,
-                                         EmployeesDto.employee_role))
-    db.commit()
-    employee.employee_id = cursor.lastrowid
-    db.close()
-    return employee
+def get_employees() -> list[EmployeesDto]:
+    query = "SELECT * FROM employees"
+    rows = db.fetch_all(query)
+    return [EmployeesDto(*row) for row in rows]
 
 
-def get_employees():
-    db = get_connection(DB_NAME)
-    cursor = db.cursor()
-    cursor.execute(GET_ALL_EMPLOYEES_QUERY)
-    employees = cursor.fetchall()
-    db.close()
-    return employees
+def get_employee(employee_id: int) -> Optional[EmployeesDto]:
+    query = "SELECT * FROM employees WHERE employee_id = ?"
+    row = db.fetch_one(query, (employee_id,))
+    return EmployeesDto.from_row(row)
 
 
-def get_employee(employee_id: int):
-    db = get_connection(DB_NAME)
-    cursor = db.cursor(GET_EMPLOYEE_BY_ID_QUERY, str(employee_id))
-    cursor.execute()
-    employee = cursor.fetchone()
-    db.close()
-    return employee
-
-
-def delete_employee(employee_id: int):
-    db = get_connection(DB_NAME)
-    cursor = db.cursor()
-    cursor.execute(DELETE_EMPLOYEE_QUERY, str(employee_id))
-    db.commit()
-    db.close()
+def delete_employee(employee_id: int) -> None:
+    query = "DELETE FROM employees WHERE employee_id = ?"
+    db.execute_query(query, (employee_id,))

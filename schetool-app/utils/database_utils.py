@@ -1,12 +1,42 @@
 import sqlite3
+from typing import Any, List, Tuple, Optional
 
 
-ADD_EMPLOYEES_QUERY = ("INSERT INTO employees (employee_name, employee_surname, employee_email, employee_phone_number, "
-                       "employee_role) VALUES (?, ?, ?, ?, ?, ?)")
-GET_ALL_EMPLOYEES_QUERY = "SELECT * FROM employees"
-GET_EMPLOYEE_BY_ID_QUERY = "SELECT * FROM employees WHERE employee_id = ?"
-DELETE_EMPLOYEE_QUERY = "DELETE FROM employees WHERE employee_id = ?"
 
+class Database:
+    def __init__(self, db_name: str):
+        """Inicializa la clase con el nombre de la base de datos."""
+        self.db_name = db_name
 
-def get_connection(database: str):
-    return sqlite3.connect(database)
+    def execute_query(self, query: str, params: Optional[Tuple[Any, ...]] = ()) -> None:
+        """Ejecuta una consulta (INSERT, UPDATE, DELETE) y confirma los cambios."""
+        try:
+            with sqlite3.connect(self.db_name) as connection:
+                cursor = connection.cursor()
+                cursor.execute(query, params)
+                connection.commit()
+        except sqlite3.Error as e:
+            """Añadir logs"""
+            raise
+
+    def fetch_one(self, query: str, params: Optional[Tuple[Any, ...]] = ()) -> Optional[Tuple[Any, ...]]:
+        """Ejecuta una consulta y devuelve un solo resultado."""
+        try:
+            with sqlite3.connect(self.db_name) as connection:
+                cursor = connection.cursor()
+                cursor.execute(query, params)
+                return cursor.fetchone()
+        except sqlite3.Error as e:
+            """Añadir logs"""
+            raise
+
+    def fetch_all(self, query: str, params: Optional[Tuple[Any, ...]] = ()) -> List[Tuple[Any, ...]]:
+        """Ejecuta una consulta y devuelve todos los resultados."""
+        try:
+            with sqlite3.connect(self.db_name) as connection:
+                cursor = connection.cursor()
+                cursor.execute(query, params)
+                return cursor.fetchall()
+        except sqlite3.Error as e:
+            """Añadir logs"""
+            raise

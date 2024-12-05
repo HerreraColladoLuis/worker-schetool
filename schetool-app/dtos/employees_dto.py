@@ -9,3 +9,7 @@ class EmployeesDto:
     employee_email: str
     employee_phone_number: str
     employee_role: int
+
+    @staticmethod
+    def from_row(row):
+        return EmployeesDto(*row) if row else None
