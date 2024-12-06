@@ -10,8 +10,8 @@ def add_employee(employee: EmployeesDto) -> None:
         "INSERT INTO employees (employee_name, employee_surname, employee_email, employee_phone_number, "
         "employee_role) VALUES (?, ?, ?, ?, ?, ?)"
     )
-    params = (EmployeesDto.employee_name, EmployeesDto.employee_surname,EmployeesDto.employee_email,
-              EmployeesDto.employee_phone_number, EmployeesDto.employee_role)
+    params = (employee.employee_name, employee.employee_surname,employee.employee_email,
+              employee.employee_phone_number, employee.employee_role)
     db.execute_query(query, params)
 
 
@@ -21,12 +21,12 @@ def get_employees() -> list[EmployeesDto]:
     return [EmployeesDto(*row) for row in rows]
 
 
-def get_employee(employee_id: int) -> Optional[EmployeesDto]:
+def get_employee_by_id(employee_id: int) -> Optional[EmployeesDto]:
     query = "SELECT * FROM employees WHERE employee_id = ?"
     row = db.fetch_one(query, (employee_id,))
     return EmployeesDto.from_row(row)
 
 
-def delete_employee(employee_id: int) -> None:
+def delete_employee_by_id(employee_id: int) -> None:
     query = "DELETE FROM employees WHERE employee_id = ?"
     db.execute_query(query, (employee_id,))

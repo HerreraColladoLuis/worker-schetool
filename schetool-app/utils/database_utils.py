@@ -17,6 +17,7 @@ class Database:
                 connection.commit()
         except sqlite3.Error as e:
             """Añadir logs"""
+            connection.rollback()
             raise
 
     def fetch_one(self, query: str, params: Optional[Tuple[Any, ...]] = ()) -> Optional[Tuple[Any, ...]]:
@@ -40,3 +41,15 @@ class Database:
         except sqlite3.Error as e:
             """Añadir logs"""
             raise
+
+    def execute_transaction(self, queries: List[Tuple[str, Tuple[Any, ...]]]) -> None:
+        with sqlite3.connect(self.db_name) as connection:
+            try:
+                cursor = connection.cursor()
+                for query, params in queries:
+                    cursor.execute(query, params)
+                connection.commit()
+            except sqlite3.Error as e:
+                """Añadir logs"""
+                connection.rollback()
+                raise
