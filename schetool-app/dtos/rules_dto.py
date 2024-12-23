@@ -7,3 +7,8 @@ class RulesDto:
     rule_type: str
     rule_value: str
     rule_description: str
+
+    @staticmethod
+    def from_row(row):
+        return RulesDto(*row) if row else None
+    

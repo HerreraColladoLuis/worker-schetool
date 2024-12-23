@@ -10,3 +10,7 @@ class DailyShiftsDto:
     shift_end_time: time
     shift_employee: int
     shift_schedule: int
+
+    @staticmethod
+    def from_row(row):
+        return DailyShiftsDto(*row) if row else None
